@@ -48,9 +48,11 @@ It is important to note that
 
 2. the lines are either
 
-    a. `Rule`s, which you would put on their own line anyway for nicely formatted LaTeX,
-    b. iterables of cells (not checked for number of cells),
-    c. matrices, which are printed line by line.
+    - `Rule`s, which you would put on their own line anyway for nicely formatted LaTeX,
+
+    - iterables of cells (not checked for number of cells),
+
+    - matrices, which are printed line by line.
 
 3. [booktabs](https://ctan.org/pkg/booktabs) rules are supported.
 
