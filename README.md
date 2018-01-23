@@ -23,6 +23,7 @@ latex_tabular("/tmp/table.tex",
               Rule(),           # a nice \hrule to make it ugly
               [4.0 "5" "six";   # a matrix
                7 8 9],
+              CMidRule(1, 2),
               [MultiColumn(2, :c, "centered")], # ragged!
               Rule(:bottom))
 ```
@@ -36,6 +37,7 @@ $\alpha$ & $\beta$ & sum \\
 \hrule
 4.0 & 5 & six \\
 7 & 8 & 9 \\
+\cmidrule{1-2}
 \multicolumn{2}{c}{centered} \\
 \bottomrule
 \end{tabular}

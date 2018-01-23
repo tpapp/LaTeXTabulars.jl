@@ -4,7 +4,7 @@ using ArgCheck
 using DocStringExtensions
 using Parameters
 
-export Rule, MultiColumn, Tabular, latex_tabular
+export Rule, CMidRule, MultiColumn, Tabular, latex_tabular
 
 
 # cells
@@ -67,6 +67,35 @@ latex_line(io::IO, ::Rule{:mid}) = println(io, "\\midrule")
 latex_line(io::IO, ::Rule{:bottom}) = println(io, "\\bottomrule")
 
 latex_line(io::IO, ::Rule{:h}) = println(io, "\\hrule")
+
+"""
+    CMidRule([wd], [trim], left, right)
+
+Will be printed as `\\cmidrule[wd](trim)[left-right]`. When `wd` or `trim` is
+`nothing`, it is omitted. Use with the `booktabs` LaTeX package.
+"""
+struct CMidRule
+    wd::Union{Void, AbstractString}
+    trim::Union{Void, AbstractString}
+    left::Int
+    right::Int
+    function CMidRule(wd, trim, left, right)
+        @argcheck 1 ≤ left ≤ right
+        new(wd, trim, left, right)
+    end
+end
+
+CMidRule(trim, left, right) = CMidRule(nothing, trim, left, right)
+
+CMidRule(left, right) = CMidRule(nothing, nothing, left, right)
+
+function latex_line(io::IO, rule::CMidRule)
+    @unpack wd, trim, left, right = rule
+    print(io, "\\cmidrule")
+    wd ≠ nothing && print(io, "[$(wd)]")
+    trim ≠ nothing && print(io, "($(trim))")
+    print(io, "{$(left)-$(right)} ") # NOTE trailing space important
+end
 
 function latex_line(io::IO, cells)
     for (column, cell) in enumerate(cells)

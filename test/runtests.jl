@@ -25,6 +25,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
               Rule(),           # a nice \hrule to make it ugly
               [4.0 "5" "six";   # a matrix
                7 8 9],
+              CMidRule(1, 2),
               [MultiColumn(2, :c, "centered")], # ragged!
               Rule(:bottom)]
     tlatex = raw"\begin{tabular}{lcl}
@@ -34,7 +35,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
                  1 & 2 & 3 \\
                  \hrule
                  4.0 & 5 & six \\
-                 7 & 8 & 9 \\
+                 7 & 8 & 9 \\ \cmidrule{1-2}
                  \multicolumn{2}{c}{centered} \\
                  \bottomrule
                  \end{tabular}"
@@ -48,3 +49,5 @@ end
 
 @test_throws ArgumentError latex_cell(STDOUT, MultiColumn(2, :BAD, ""))
 @test_throws MethodError latex_cell(STDOUT, ("un", "supported"))
+@test_throws ArgumentError CMidRule(3, 1)     # not ≤
+@test_throws MethodError CMidRule(1, 1, 1, 2) # invalid types
