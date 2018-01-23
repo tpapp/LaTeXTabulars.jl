@@ -87,6 +87,11 @@ end
 
 abstract type TabularLike end
 
+"""
+    Tabular(cols)
+
+For the LaTeX environment `\\begin{tabular}{cols} ... \\end{tabular}`.
+"""
 struct Tabular <: TabularLike
     "A column specification, eg `\"llrr\"`."
     cols::AbstractString
@@ -102,7 +107,7 @@ latex_env_end(io::IO, t::Tabular) = println(io, "\\end{tabular}")
 Print `lines` to `io` as a LaTeX using the given environment.
 
 Each element in `lines` is an iterable of cells (not checked for length
-consistency), or a separator like [`Rule`](@ref).
+consistency), a matrix, or a separator like [`Rule`](@ref).
 
 See [`latex_cell`](@ref) for the kinds of cell supported (particularly
 [`MultiColumn`](@ref), but for full formatting control, use an `String` or
@@ -138,5 +143,7 @@ function latex_tabular(filename::AbstractString, t::TabularLike, lines)
         latex_tabular(io, t, lines)
     end
 end
+
+latex_tabular(dest, t::TabularLike, lines...) = latex_tabular(dest, t, lines)
 
 end # module

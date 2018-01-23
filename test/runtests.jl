@@ -40,6 +40,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
                  \end{tabular}"
 
     @test latex_tabular(String, tb, tlines) ≅ tlatex
+    @test latex_tabular(String, tb, tlines...) ≅ tlatex
     tmp = tempname()
     latex_tabular(tmp, tb, tlines)
     @test isfile(tmp) && readstring(tmp) ≅ tlatex
