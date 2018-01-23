@@ -13,7 +13,7 @@ This is how it works:
 
 ```julia
 using LaTeXTabulars
-using LaTeXStrings # not dependency
+using LaTeXStrings               # not a dependency, but works nicely
 latex_tabular("/tmp/table.tex",
               Tabular("lcl"),
               [Rule(:top),
