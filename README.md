@@ -6,3 +6,48 @@
 [![codecov.io](http://codecov.io/github/tpapp/LaTeXTabulars.jl/coverage.svg?branch=master)](http://codecov.io/github/tpapp/LaTeXTabulars.jl?branch=master)
 
 Write tabular data from Julia in LaTeX format.
+
+This is a *very thin wrapper*, basically for avoiding some loops and repeatedly used strings. It assumes that you know how the LaTeX `tabular` environment works, and you have formatted the cells to string if you want anything fancy.
+
+This is how it works:
+
+```julia
+using LaTeXTabulars
+using LaTeXStrings # not dependency
+latex_tabular("/tmp/table.tex",
+              Tabular("lcl"),
+              [Rule(:top),
+               [L"\alpha", L"\beta", "sum"],
+               Rule(:mid),
+               [1, 2, 3],
+               Rule(), # a nice \hrule to make it ugly
+               [4.0, "5", "six"],
+               [MultiColumn(2, :c, "centered")], # ragged!
+               Rule(:bottom)])
+```
+will write something like
+```LaTeX
+\begin{tabular}{lcl}
+\toprule
+$\alpha$ & $\beta$ & sum \\
+\midrule
+1 & 2 & 3 \\
+\hrule
+4.0 & 5 & six \\
+\multicolumn{2}{c}{centered} \\
+\bottomrule
+\end{tabular}
+```
+to `/tmp/table.tex`.
+
+It is important to note that
+
+1. the position specifier `lcl` is not checked for valid syntax or consitency with the contents, just emitted as is, allowing the use of [dcolumn](https://ctan.org/pkg/dcolumn) or similar,
+
+2. the lines are either iterables of cells, not checked for number of cells; or `Rule`s,
+
+3. [booktabs](https://ctan.org/pkg/booktabs) rules are supported.
+
+Vertical rules of any kind are *not supported* and it would be difficult to convince me to add them. The documentation of [booktabs](https://ctan.org/pkg/booktabs) should explain why.
+
+[Other tabular-like types](https://en.wikibooks.org/wiki/LaTeX/Tables) can be easily added, just open an issue.

@@ -4,7 +4,7 @@ using ArgCheck
 using DocStringExtensions
 using Parameters
 
-export Rule, MultiColumn, latex_tabular
+export Rule, MultiColumn, Tabular, latex_tabular
 
 
 # cells
@@ -77,14 +77,23 @@ function latex_line(io::IO, cells)
 end
 
 
-# tabular
+# tabular and similar environments
+
+abstract type TabularLike end
+
+struct Tabular <: TabularLike
+    "A column specification, eg `\"llrr\"`."
+    cols::AbstractString
+end
+
+latex_env_begin(io::IO, t::Tabular) = println(io, "\\begin{tabular}{$(t.cols)}")
+
+latex_env_end(io::IO, t::Tabular) = println(io, "\\end{tabular}")
 
 """
     $SIGNATURES
 
-Print `lines` to `io` as a LaTeX `tabular` environment.
-
-`cols` specifies the columns, and follows the syntax of LaTeX.
+Print `lines` to `io` as a LaTeX using the given environment.
 
 Each element in `lines` is an iterable of cells (not checked for length
 consistency), or a separator like [`Rule`](@ref).
@@ -93,29 +102,34 @@ See [`latex_cell`](@ref) for the kinds of cell supported (particularly
 [`MultiColumn`](@ref), but for full formatting control, use an `String` or
 `LaTeXString` for cells.
 """
-function latex_tabular(io::IO, cols::AbstractString, lines)
-    println(io, "\\begin{tabular}{$cols}")
+function latex_tabular(io::IO, t::TabularLike, lines)
+    latex_env_begin(io, t)
     for line in lines
         latex_line(io, line)
     end
-    println(io, "\\end{tabular}")
+    latex_env_end(io, t)
 end
 
-function latex_tabular(::Type{String}, args...)
+"""
+    $SIGNATURES
+
+LaTeX output as a string.
+"""
+function latex_tabular(::Type{String}, t::TabularLike, lines)
     io = IOBuffer()
-    latex_tabular(io, args...)
+    latex_tabular(io, t, lines)
     String(take!(io))
 end
 
 """
     $SIGNATURES
 
-Write a `tabular` LaTeX environment to `filename`, which is **overwritten** if
-it already exists. Other arguments are passed to [`latex_tabular`](@ref).
+Write a `tabular`-like LaTeX environment to `filename`, which is **overwritten**
+if it already exists.
 """
-function latex_tabular(filename::AbstractString, args...)
+function latex_tabular(filename::AbstractString, t::TabularLike, lines)
     open(filename, "w") do io
-        latex_tabular(io, args...)
+        latex_tabular(io, t, lines)
     end
 end
 
