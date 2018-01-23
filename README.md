@@ -7,7 +7,7 @@
 
 Write tabular data from Julia in LaTeX format.
 
-This is a *very thin wrapper*, basically for avoiding some loops and repeatedly used strings. It assumes that you know how the LaTeX `tabular` environment works, and you have formatted the cells to string if you want anything fancy.
+This is a *very thin wrapper*, basically for avoiding some loops and repeatedly used strings. It assumes that you know how the LaTeX `tabular` environment works, and you have formatted the cells to strings if you want anything fancy like rounding or alignment on the decimal dot.
 
 This is how it works:
 
@@ -20,8 +20,9 @@ latex_tabular("/tmp/table.tex",
                [L"\alpha", L"\beta", "sum"],
                Rule(:mid),
                [1, 2, 3],
-               Rule(), # a nice \hrule to make it ugly
-               [4.0, "5", "six"],
+               Rule(),           # a nice \hrule to make it ugly
+               [4.0 "5" "six";   # a matrix
+                7 8 9],
                [MultiColumn(2, :c, "centered")], # ragged!
                Rule(:bottom)])
 ```
@@ -34,6 +35,7 @@ $\alpha$ & $\beta$ & sum \\
 1 & 2 & 3 \\
 \hrule
 4.0 & 5 & six \\
+7 & 8 & 9 \\
 \multicolumn{2}{c}{centered} \\
 \bottomrule
 \end{tabular}
@@ -44,10 +46,14 @@ It is important to note that
 
 1. the position specifier `lcl` is not checked for valid syntax or consitency with the contents, just emitted as is, allowing the use of [dcolumn](https://ctan.org/pkg/dcolumn) or similar,
 
-2. the lines are either iterables of cells, not checked for number of cells; or `Rule`s,
+2. the lines are either
+
+    a. `Rule`s, which you would put on their own line anyway for nicely formatted LaTeX,
+    b. iterables of cells (not checked for number of cells),
+    c. matrices, which are printed line by line.
 
 3. [booktabs](https://ctan.org/pkg/booktabs) rules are supported.
 
-Vertical rules of any kind are *not supported* and it would be difficult to convince me to add them. The documentation of [booktabs](https://ctan.org/pkg/booktabs) should explain why.
+Vertical rules of any kind are *not explicitly supported* and it would be difficult to convince me to add them. The documentation of [booktabs](https://ctan.org/pkg/booktabs) should explain why. That said, if you insist, you can use a cell like `\vline text`.
 
-[Other tabular-like types](https://en.wikibooks.org/wiki/LaTeX/Tables) can be easily added, just open an issue.
+The code is generic, so [other tabular-like types](https://en.wikibooks.org/wiki/LaTeX/Tables) can be easily added, just open an issue.

@@ -76,6 +76,12 @@ function latex_line(io::IO, cells)
     println(io, " \\\\")
 end
 
+function latex_line(io::IO, M::AbstractMatrix)
+    for i in indices(M, 1)
+        latex_line(io, M[i, :])
+    end
+end
+
 
 # tabular and similar environments
 

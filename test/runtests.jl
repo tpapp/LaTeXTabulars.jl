@@ -22,8 +22,9 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
               [L"\alpha", L"\beta", "sum"],
               Rule(:mid),
               [1, 2, 3],
-              Rule(), # a nice \hrule to make it ugly
-              [4.0, "5", "six"],
+              Rule(),           # a nice \hrule to make it ugly
+              [4.0 "5" "six";   # a matrix
+               7 8 9],
               [MultiColumn(2, :c, "centered")], # ragged!
               Rule(:bottom)]
     tlatex = raw"\begin{tabular}{lcl}
@@ -33,6 +34,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
                  1 & 2 & 3 \\
                  \hrule
                  4.0 & 5 & six \\
+                 7 & 8 & 9 \\
                  \multicolumn{2}{c}{centered} \\
                  \bottomrule
                  \end{tabular}"
