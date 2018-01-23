@@ -87,7 +87,7 @@ end
 
 CMidRule(trim, left, right) = CMidRule(nothing, trim, left, right)
 
-CMidRule(left, right) = CMidRule(nothing, nothing, left, right)
+CMidRule(left, right) = CMidRule(nothing, left, right)
 
 function latex_line(io::IO, rule::CMidRule)
     @unpack wd, trim, left, right = rule
