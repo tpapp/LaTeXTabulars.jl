@@ -25,8 +25,8 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
               Rule(),           # a nice \hrule to make it ugly
               [4.0 "5" "six";   # a matrix
                7 8 9],
-              CMidRule(1, 2),
-              [MultiColumn(2, :c, "centered")], # ragged!
+              (CMidRule(1, 2), CMidRule("lr", 1, 1)), # just to test tuples
+              [MultiColumn(2, :c, "centered")],       # ragged!
               Rule(:bottom)]
     tlatex = raw"\begin{tabular}{lcl}
                  \toprule
@@ -35,7 +35,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
                  1 & 2 & 3 \\
                  \hrule
                  4.0 & 5 & six \\
-                 7 & 8 & 9 \\ \cmidrule{1-2}
+                 7 & 8 & 9 \\ \cmidrule{1-2} \cmidrule(lr){1-1}
                  \multicolumn{2}{c}{centered} \\
                  \bottomrule
                  \end{tabular}"

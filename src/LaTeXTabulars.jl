@@ -111,6 +111,12 @@ function latex_line(io::IO, M::AbstractMatrix)
     end
 end
 
+function latex_line(io::IO, lines::Tuple)
+    for line in lines
+        latex_line(io, line)
+    end
+end
+
 
 # tabular and similar environments
 
@@ -135,8 +141,17 @@ latex_env_end(io::IO, t::Tabular) = println(io, "\\end{tabular}")
 
 Print `lines` to `io` as a LaTeX using the given environment.
 
-Each element in `lines` is an iterable of cells (not checked for length
-consistency), a matrix, or a separator like [`Rule`](@ref).
+Each `line` in `lines` can be
+
+- a rule-like object, eg [`Rule`] or [`CMidRule`],
+
+- an iterable (eg `AbstractVector`) of cells,
+
+- a `Tuple`, which is treated as multiple lines (“splat” in place), which is
+  useful for functions that generate lines with associated rules, or multiple
+  `CMidRule`s,
+
+- a matrix, each row of which is treated as a line.
 
 See [`latex_cell`](@ref) for the kinds of cell supported (particularly
 [`MultiColumn`](@ref), but for full formatting control, use an `String` or

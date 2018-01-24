@@ -44,20 +44,10 @@ $\alpha$ & $\beta$ & sum \\
 ```
 to `/tmp/table.tex`.
 
-It is important to note that
+Note that the position specifier `lcl` is not checked for valid syntax or consitency with the contents, just emitted as is, allowing the use of [dcolumn](https://ctan.org/pkg/dcolumn) or similar, and the number of cells in each line is not checked for consistency. This means that the usual LaTeX rules apply: fewer cells than position specifiers gives you a ragged table, more cells and LaTeX will complain about having to change `&` to `\\`.
 
-1. the position specifier `lcl` is not checked for valid syntax or consitency with the contents, just emitted as is, allowing the use of [dcolumn](https://ctan.org/pkg/dcolumn) or similar,
+See `?latex_tabular` for the documentation of the syntax, and the unit tests for examples.
 
-2. the lines are either
-
-    - `Rule`s, which you would put on their own line anyway for nicely formatted LaTeX,
-
-    - iterables of cells (not checked for number of cells),
-
-    - matrices, which are printed line by line.
-
-3. [booktabs](https://ctan.org/pkg/booktabs) rules are supported.
-
-Vertical rules of any kind are *not explicitly supported* and it would be difficult to convince me to add them. The documentation of [booktabs](https://ctan.org/pkg/booktabs) should explain why. That said, if you insist, you can use a cell like `\vline text`.
+Rule types in [booktabs](https://ctan.org/pkg/booktabs) are supported. Vertical rules of any kind are *not explicitly supported* and it would be difficult to convince me to add them. The documentation of [booktabs](https://ctan.org/pkg/booktabs) should explain why. That said, if you insist, you can use a cell like `\vline text`.
 
 The code is generic, so [other tabular-like types](https://en.wikibooks.org/wiki/LaTeX/Tables) can be easily added, just open an issue.
