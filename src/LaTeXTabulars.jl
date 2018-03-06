@@ -17,10 +17,10 @@ Print a the contents of `cell` to `io` as LaTeX.
 !!! NOTE
 
     Methods are defined for some specific types, but if you want full control
-    (eg rounding), use a string or `LaTeXString`.
+    (eg rounding), use an `<: AbstractString`, eg `String` or `LaTeXString`.
 """
 function latex_cell(io::IO, cell::T) where T
-    info("Define a method for writing $T objects to LaTeX.")
+    info("Define a `latex_cell` for writing $T objects to LaTeX.")
     throw(MethodError(latex_cell, Tuple{IO, T}))
 end
 
@@ -41,14 +41,15 @@ end
 
 function latex_cell(io::IO, mc::MultiColumn)
     @unpack n, pos, cell = mc
-    @argcheck pos ∈ (:l, :c, :r) "$pos is not a recognized position. Use :l, :c, :r."
+    @argcheck(pos ∈ (:l, :c, :r),
+              "$pos is not a recognized position. Use :l, :c, :r.")
     print(io, "\\multicolumn{$(n)}{$(pos)}{")
     latex_cell(io, mc.cell)
     print(io, "}")
 end
 
 
-# lines and line-like objects
+# non-cell-like objects
 
 struct Rule{T} end
 
@@ -60,13 +61,15 @@ generally be printed as `\\KINDrule`, eg `Rule(:top)` prints `\\toprule`.
 """
 Rule(kind::Symbol = :h) = Rule{kind}()
 
-latex_line(io::IO, ::Rule{:top}) = println(io, "\\toprule")
+latex_line(io::IO, ::Rule{:top}) = println(io, "\\toprule ")
 
-latex_line(io::IO, ::Rule{:mid}) = println(io, "\\midrule")
+latex_line(io::IO, ::Rule{:mid}) = println(io, "\\midrule ")
 
-latex_line(io::IO, ::Rule{:bottom}) = println(io, "\\bottomrule")
+latex_line(io::IO, ::Rule{:bottom}) = println(io, "\\bottomrule ")
 
-latex_line(io::IO, ::Rule{:h}) = println(io, "\\hrule")
+latex_line(io::IO, ::Rule{:h}) = println(io, "\\hrule ")
+
+latex_line(io::IO, r::Rule) = error("Don't know how to print $(typeof(r))")
 
 """
     CMidRule([wd], [trim], left, right)
@@ -165,6 +168,9 @@ function latex_tabular(io::IO, t::TabularLike, lines)
     latex_env_end(io, t)
 end
 
+latex_tabular(io::IO, t::TabularLike, lines::AbstractMatrix) =
+    latex_tabular(io, t, [lines])
+
 """
     $SIGNATURES
 
@@ -187,7 +193,5 @@ function latex_tabular(filename::AbstractString, t::TabularLike, lines)
         latex_tabular(io, t, lines)
     end
 end
-
-latex_tabular(dest, t::TabularLike, lines...) = latex_tabular(dest, t, lines)
 
 end # module
