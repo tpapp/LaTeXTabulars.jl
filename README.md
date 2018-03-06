@@ -15,12 +15,12 @@ This is how it works:
 using LaTeXTabulars
 using LaTeXStrings               # not a dependency, but works nicely
 latex_tabular("/tmp/table.tex",
-              [Tabular("lcl"),
-               Rule(:top),
+              Tabular("lcl"),
+              [Rule(:top),
                [L"\alpha", L"\beta", "sum"],
                Rule(:mid),
                [1, 2, 3],
-               Rule(),           # a nice \hrule to make it ugly
+               Rule(),           # a nice \hline to make it ugly
                [4.0 "5" "six";   # a matrix
                 7 8 9],
                CMidRule(1, 2),
@@ -34,7 +34,7 @@ will write something like
 $\alpha$ & $\beta$ & sum \\
 \midrule
 1 & 2 & 3 \\
-\hrule
+\hline
 4.0 & 5 & six \\
 7 & 8 & 9 \\
 \cmidrule{1-2}
