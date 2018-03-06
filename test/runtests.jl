@@ -41,13 +41,12 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
                  \end{tabular}"
 
     @test latex_tabular(String, tb, tlines) ≅ tlatex
-    @test latex_tabular(String, tb, tlines...) ≅ tlatex
     tmp = tempname()
     latex_tabular(tmp, tb, tlines)
     @test isfile(tmp) && readstring(tmp) ≅ tlatex
 end
 
 @test_throws ArgumentError latex_cell(STDOUT, MultiColumn(2, :BAD, ""))
-@test_throws MethodError latex_cell(STDOUT, ("un", "supported"))
 @test_throws ArgumentError CMidRule(3, 1)     # not ≤
+@test_throws MethodError latex_cell(STDOUT, ("un", "supported"))
 @test_throws MethodError CMidRule(1, 1, 1, 2) # invalid types
