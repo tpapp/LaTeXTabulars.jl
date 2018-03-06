@@ -22,7 +22,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
               [L"\alpha", L"\beta", "sum"],
               Rule(:mid),
               [1, 2, 3],
-              Rule(),           # a nice \hrule to make it ugly
+              Rule(),           # a nice \hline to make it ugly
               [4.0 "5" "six";   # a matrix
                7 8 9],
               (CMidRule(1, 2), CMidRule("lr", 1, 1)), # just to test tuples
@@ -33,7 +33,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+", " "))
                  $\alpha$ & $\beta$ & sum \\
                  \midrule
                  1 & 2 & 3 \\
-                 \hrule
+                 \hline
                  4.0 & 5 & six \\
                  7 & 8 & 9 \\ \cmidrule{1-2} \cmidrule(lr){1-1}
                  \multicolumn{2}{c}{centered} \\

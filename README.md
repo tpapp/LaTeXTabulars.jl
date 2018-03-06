@@ -15,17 +15,17 @@ This is how it works:
 using LaTeXTabulars
 using LaTeXStrings               # not a dependency, but works nicely
 latex_tabular("/tmp/table.tex",
-              Tabular("lcl"),
-              Rule(:top),
-              [L"\alpha", L"\beta", "sum"],
-              Rule(:mid),
-              [1, 2, 3],
-              Rule(),           # a nice \hrule to make it ugly
-              [4.0 "5" "six";   # a matrix
-               7 8 9],
-              CMidRule(1, 2),
-              [MultiColumn(2, :c, "centered")], # ragged!
-              Rule(:bottom))
+              [Tabular("lcl"),
+               Rule(:top),
+               [L"\alpha", L"\beta", "sum"],
+               Rule(:mid),
+               [1, 2, 3],
+               Rule(),           # a nice \hrule to make it ugly
+               [4.0 "5" "six";   # a matrix
+                7 8 9],
+               CMidRule(1, 2),
+               [MultiColumn(2, :c, "centered")], # ragged!
+               Rule(:bottom)])
 ```
 will write something like
 ```LaTeX
