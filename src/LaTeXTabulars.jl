@@ -57,7 +57,8 @@ struct Rule{T} end
     $SIGNATURES
 
 Horizontal rule. The `kind` of the rule is specified by a symbol, which will
-generally be printed as `\\KINDrule`, eg `Rule(:top)` prints `\\toprule`.
+generally be printed as `\\KINDrule` for rules in `booktabs`, eg `Rule(:top)`
+prints `\\toprule`. To obtain a `\\hline`, use `Rule{:h}`.
 """
 Rule(kind::Symbol = :h) = Rule{kind}()
 
@@ -67,9 +68,9 @@ latex_line(io::IO, ::Rule{:mid}) = println(io, "\\midrule ")
 
 latex_line(io::IO, ::Rule{:bottom}) = println(io, "\\bottomrule ")
 
-latex_line(io::IO, ::Rule{:h}) = println(io, "\\hrule ")
+latex_line(io::IO, ::Rule{:h}) = println(io, "\\hline ")
 
-latex_line(io::IO, r::Rule) = error("Don't know how to print $(typeof(r))")
+latex_line(io::IO, r::Rule) = error("Don't know how to print $(typeof(r)).")
 
 """
     CMidRule([wd], [trim], left, right)
