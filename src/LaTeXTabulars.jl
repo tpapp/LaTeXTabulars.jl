@@ -20,7 +20,7 @@ Print a the contents of `cell` to `io` as LaTeX.
     (eg rounding), use an `<: AbstractString`, eg `String` or `LaTeXString`.
 """
 function latex_cell(io::IO, cell::T) where T
-    info("Define a method for writing $T objects to LaTeX.")
+    info("Define a `latex_cell` for writing $T objects to LaTeX.")
     throw(MethodError(latex_cell, Tuple{IO, T}))
 end
 
