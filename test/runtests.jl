@@ -44,7 +44,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
     @test latex_tabular(String, tb, tlines) ≅ tlatex
     tmp = tempname()
     latex_tabular(tmp, tb, tlines)
-    @test isfile(tmp) && readstring(tmp) ≅ tlatex
+    @test isfile(tmp) && read(tmp, String) ≅ tlatex
     @test read(tmp, String) ≅ tlatex
 end
 
