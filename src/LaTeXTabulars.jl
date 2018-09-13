@@ -3,6 +3,7 @@ module LaTeXTabulars
 using ArgCheck
 using DocStringExtensions
 using Parameters
+using Logging
 
 export Rule, CMidRule, MultiColumn, Tabular, latex_tabular
 
@@ -20,7 +21,7 @@ Print a the contents of `cell` to `io` as LaTeX.
     (eg rounding), use an `<: AbstractString`, eg `String` or `LaTeXString`.
 """
 function latex_cell(io::IO, cell::T) where T
-    info("Define a `latex_cell` for writing $T objects to LaTeX.")
+    @info "Define a `latex_cell` for writing $T objects to LaTeX."
     throw(MethodError(latex_cell, Tuple{IO, T}))
 end
 
@@ -79,8 +80,8 @@ Will be printed as `\\cmidrule[wd](trim)[left-right]`. When `wd` or `trim` is
 `nothing`, it is omitted. Use with the `booktabs` LaTeX package.
 """
 struct CMidRule
-    wd::Union{Void, AbstractString}
-    trim::Union{Void, AbstractString}
+    wd::Union{Nothing, AbstractString}
+    trim::Union{Nothing, AbstractString}
     left::Int
     right::Int
     function CMidRule(wd, trim, left, right)
@@ -110,7 +111,7 @@ function latex_line(io::IO, cells)
 end
 
 function latex_line(io::IO, M::AbstractMatrix)
-    for i in indices(M, 1)
+    for i in axes(M, 1)
         latex_line(io, M[i, :])
     end
 end
