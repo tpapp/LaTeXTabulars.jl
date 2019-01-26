@@ -5,7 +5,7 @@ using DocStringExtensions
 using Parameters
 using Logging
 
-export Rule, CMidRule, MultiColumn, Tabular, latex_tabular
+export Rule, CMidRule, MultiColumn, Tabular, LongTable, latex_tabular
 
 
 # cells
@@ -195,5 +195,35 @@ function latex_tabular(filename::AbstractString, t::TabularLike, lines)
         latex_tabular(io, t, lines)
     end
 end
+
+struct LongTable <: TabularLike
+    "A column specification, eg `\"llrr\"`."
+    cols::AbstractString
+
+    "The table header, to be repeated at the top of each page, eg `[\"alpha\", \"beta\", \"gamma\"]`."
+    header
+end
+
+function latex_env_begin(io::IO, t::LongTable)
+    println(io, "\\begin{longtable}[c]{$(t.cols)}")
+    latex_line(io, Rule(:h))
+    latex_line(io, t.header)
+    latex_line(io, Rule(:h))
+    println(io, "\\endfirsthead")
+    println(io, "\\multicolumn{$(length(t.cols))}{l}")
+    println(io, "{{\\bfseries \\tablename\\ \\thetable{} --- continued from previous page}} \\\\")
+    latex_line(io, Rule(:h))
+    latex_line(io, t.header)
+    latex_line(io, Rule(:h))
+    println(io, "\\endhead")
+    latex_line(io, Rule(:h))
+    println(io, "\\multicolumn{$(length(t.cols))}{r}{{\\bfseries Continued on next page}} \\\\")
+    latex_line(io, Rule(:h))
+    println(io, "\\endfoot")
+    latex_line(io, Rule(:h))
+    println(io, "\\endlastfoot")
+end
+
+latex_env_end(io::IO, t::LongTable) = println(io, "\\end{longtable}")
 
 end # module

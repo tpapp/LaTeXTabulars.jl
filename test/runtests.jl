@@ -52,3 +52,38 @@ end
 @test_throws ArgumentError CMidRule(3, 1)     # not ≤
 @test_throws MethodError latex_cell(stdout, ("un", "supported"))
 @test_throws MethodError CMidRule(1, 1, 1, 2) # invalid types
+
+@testset "longtable" begin
+    lt = LongTable("rrr", ["alpha", "beta", "gamma"])
+    tlines = [[1 2 3 ;
+               4.0 "5" "six"],
+              Rule(:h)]
+    tlatex = raw"\begin{longtable}[c]{rrr}
+                 \hline 
+                 alpha & beta & gamma \\
+                 \hline 
+                 \endfirsthead
+                 \multicolumn{3}{l}
+                 {{\bfseries \tablename\ \thetable{} --- continued from previous page}} \\
+                 \hline 
+                 alpha & beta & gamma \\
+                 \hline 
+                 \endhead
+                 \hline 
+                 \multicolumn{3}{r}{{\bfseries Continued on next page}} \\
+                 \hline 
+                 \endfoot
+                 \hline 
+                 \endlastfoot
+                 1 & 2 & 3 \\
+                 4.0 & 5 & six \\
+                 \hline 
+                 \end{longtable}"
+
+    tlatex = replace(tlatex, "\r\n"=>"\n")
+    @test latex_tabular(String, lt, tlines) ≅ tlatex
+    tmp = tempname()
+    latex_tabular(tmp, lt, tlines)
+    @test isfile(tmp) && read(tmp, String) ≅ tlatex
+    @test read(tmp, String) ≅ tlatex
+end
