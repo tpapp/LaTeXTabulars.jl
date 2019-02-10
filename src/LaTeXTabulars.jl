@@ -1,9 +1,8 @@
 module LaTeXTabulars
 
-using ArgCheck
-using DocStringExtensions
-using Parameters
-using Logging
+using ArgCheck: @argcheck
+using DocStringExtensions: SIGNATURES
+using Parameters: @unpack
 
 export Rule, CMidRule, MultiColumn, Tabular, LongTable, latex_tabular
 

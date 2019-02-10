@@ -50,4 +50,4 @@ See `?latex_tabular` for the documentation of the syntax, and the unit tests for
 
 Rule types in [booktabs](https://ctan.org/pkg/booktabs) are supported. Vertical rules of any kind are *not explicitly supported* and it would be difficult to convince me to add them. The documentation of [booktabs](https://ctan.org/pkg/booktabs) should explain why. That said, if you insist, you can use a cell like `\vline text`.
 
-The code is generic, so [other tabular-like types](https://en.wikibooks.org/wiki/LaTeX/Tables) can be easily added, just open an issue.
+The other tabular type currently implemented is `LongTable`. The code is generic, so [other tabular-like types](https://en.wikibooks.org/wiki/LaTeX/Tables) can be easily added, just open an issue.
