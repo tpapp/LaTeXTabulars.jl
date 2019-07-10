@@ -10,7 +10,7 @@ export Rule, CMidRule, MultiColumn, Tabular, LongTable, latex_tabular
 # cells
 
 """
-    $SIGNATURES
+    $(SIGNATURES)
 
 Print a the contents of `cell` to `io` as LaTeX.
 
@@ -141,7 +141,7 @@ latex_env_begin(io::IO, t::Tabular) = println(io, "\\begin{tabular}{$(t.cols)}")
 latex_env_end(io::IO, t::Tabular) = println(io, "\\end{tabular}")
 
 """
-    $SIGNATURES
+    $(SIGNATURES)
 
 Print `lines` to `io` as a LaTeX using the given environment.
 
@@ -173,9 +173,9 @@ latex_tabular(io::IO, t::TabularLike, lines::AbstractMatrix) =
     latex_tabular(io, t, [lines])
 
 """
-    $SIGNATURES
+    $(SIGNATURES)
 
-LaTeX output as a string.
+LaTeX output as a string. See other method for the other arguments.
 """
 function latex_tabular(::Type{String}, t::TabularLike, lines)
     io = IOBuffer()
@@ -184,7 +184,7 @@ function latex_tabular(::Type{String}, t::TabularLike, lines)
 end
 
 """
-    $SIGNATURES
+    $(SIGNATURES)
 
 Write a `tabular`-like LaTeX environment to `filename`, which is **overwritten**
 if it already exists.
@@ -199,7 +199,10 @@ struct LongTable <: TabularLike
     "A column specification, eg `\"llrr\"`."
     cols::AbstractString
 
-    "The table header, to be repeated at the top of each page, eg `[\"alpha\", \"beta\", \"gamma\"]`."
+    """
+    The table header, to be repeated at the top of each page, supplied an iterable of cells,
+    eg `[\"alpha\", \"beta\", \"gamma\"]`.
+    """
     header
 end
 
