@@ -1,10 +1,7 @@
-using LaTeXTabulars
+using LaTeXTabulars, Test, LaTeXStrings
 
 # for testing
 using LaTeXTabulars: latex_cell
-
-using Test
-using LaTeXStrings
 
 "Normalize whitespace, for more convenient testing."
 squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
@@ -59,25 +56,25 @@ end
                4.0 "5" "six"],
               Rule(:h)]
     tlatex = raw"\begin{longtable}[c]{rrr}
-                 \hline 
+                 \hline
                  alpha & beta & gamma \\
-                 \hline 
+                 \hline
                  \endfirsthead
                  \multicolumn{3}{l}
                  {{\bfseries \tablename\ \thetable{} --- continued from previous page}} \\
-                 \hline 
+                 \hline
                  alpha & beta & gamma \\
-                 \hline 
+                 \hline
                  \endhead
-                 \hline 
+                 \hline
                  \multicolumn{3}{r}{{\bfseries Continued on next page}} \\
-                 \hline 
+                 \hline
                  \endfoot
-                 \hline 
+                 \hline
                  \endlastfoot
                  1 & 2 & 3 \\
                  4.0 & 5 & six \\
-                 \hline 
+                 \hline
                  \end{longtable}"
 
     tlatex = replace(tlatex, "\r\n"=>"\n")
