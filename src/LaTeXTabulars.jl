@@ -2,7 +2,7 @@ module LaTeXTabulars
 
 using ArgCheck: @argcheck
 using DocStringExtensions: SIGNATURES
-using Parameters: @unpack
+using UnPack: @unpack
 
 export Rule, CMidRule, MultiColumn, Tabular, LongTable, latex_tabular
 

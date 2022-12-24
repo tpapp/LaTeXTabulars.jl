@@ -1,15 +1,18 @@
 name = "LaTeXTabulars"
 uuid = "266f59ce-6e72-579c-98bb-27b39b5c037e"
 authors = ["Tamás K. Papp <tkpapp@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
-Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
 
 [compat]
-julia = "^1"
+ArgCheck = "1, 2"
+DocStringExtensions = "0.8, 0.9"
+UnPack = "1"
+julia = "1"
 
 [extras]
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
