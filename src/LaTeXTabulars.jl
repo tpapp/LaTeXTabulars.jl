@@ -4,7 +4,7 @@ using ArgCheck: @argcheck
 using DocStringExtensions: SIGNATURES
 using UnPack: @unpack
 
-export Rule, CMidRule, MultiColumn, Tabular, LongTable, latex_tabular
+export Rule, CMidRule, MultiColumn, MultiRow, Tabular, LongTable, latex_tabular
 
 
 # cells
@@ -45,6 +45,30 @@ function latex_cell(io::IO, mc::MultiColumn)
               "$pos is not a recognized position. Use :l, :c, :r.")
     print(io, "\\multicolumn{$(n)}{$(pos)}{")
     latex_cell(io, mc.cell)
+    print(io, "}")
+end
+
+"""
+    MultiRow(n::Int, vpos::Symbol, cell::Any, width::String)
+    MultiRow(n, vpos, cell; width="*")
+
+For `\\multirow[vpos]{n}{width}{cell}`. Use the symbols `:t`, `:c`, `:b` for `vpos`.
+"""
+struct MultiRow
+    n::Int
+    vpos::Symbol
+    cell::Any
+    width::String
+end
+
+MultiRow(n, vpos, cell; width="*") = MultiRow(n, vpos, cell, width)
+
+function latex_cell(io::IO, mr::MultiRow)
+    @unpack vpos, n, width = mr
+    @argcheck(vpos ∈ (:t, :c, :b),
+              "$vpos is not a recognized position. Use :t, :c, :b.")
+    print(io, "\\multirow[$vpos]{$(n)}{$width}{")
+    latex_cell(io, mr.cell)
     print(io, "}")
 end
 

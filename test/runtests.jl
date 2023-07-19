@@ -22,6 +22,8 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
               Rule(),           # a nice \hline to make it ugly
               [4.0 "5" "six";   # a matrix
                7 8 9],
+              [MultiRow(2, :c, "a11 \\& a21"), "a12", "a13"],
+              ["", "a22", "a23"],
               (CMidRule(1, 2), CMidRule("lr", 1, 1)), # just to test tuples
               [MultiColumn(2, :c, "centered")],       # ragged!
               Rule(:bottom)]
@@ -32,7 +34,9 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
                  1 & 2 & 3 \\
                  \hline
                  4.0 & 5 & six \\
-                 7 & 8 & 9 \\ \cmidrule{1-2} \cmidrule(lr){1-1}
+                 7 & 8 & 9 \\
+                 \multirow[c]{2}{*}{a11 \& a21} & a12 & a13 \\
+                 & a22 & a23 \\ \cmidrule{1-2} \cmidrule(lr){1-1}
                  \multicolumn{2}{c}{centered} \\
                  \bottomrule
                  \end{tabular}"
