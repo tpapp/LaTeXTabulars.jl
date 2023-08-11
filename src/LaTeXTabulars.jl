@@ -4,7 +4,7 @@ using ArgCheck: @argcheck
 using DocStringExtensions: SIGNATURES
 using UnPack: @unpack
 
-export Rule, CMidRule, MultiColumn, MultiRow, Tabular, LongTable, latex_tabular
+export Rule, CMidRule, LineSpace, MultiColumn, MultiRow, Tabular, LongTable, latex_tabular
 
 
 # cells
@@ -143,6 +143,26 @@ function latex_line(io::IO, lines::Tuple)
     for line in lines
         latex_line(io, line)
     end
+end
+
+
+"""
+    LineSpace([wd])
+
+Prints `\\addlinespace[wd]`. When `wd` is `nothing`, it is omitted.
+Use with the `booktabs` LaTeX package.
+"""
+struct LineSpace
+    wd::Union{Nothing, AbstractString}
+end
+
+LineSpace() = LineSpace(nothing)
+
+function latex_line(io::IO, ls::LineSpace)
+    @unpack wd = ls
+    print(io, "\\addlinespace")
+    wd ≠ nothing && print(io, "[$(wd)]")
+    println(io)
 end
 
 
