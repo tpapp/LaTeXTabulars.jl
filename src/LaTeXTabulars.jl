@@ -2,15 +2,13 @@ module LaTeXTabulars
 
 using ArgCheck: @argcheck
 using DocStringExtensions: SIGNATURES
-using UnPack: @unpack
 
 export Rule, CMidRule, MultiColumn, MultiRow, Tabular, LongTable, latex_tabular
 
-
 # cells
 
 """
-    $(SIGNATURES)
+$(SIGNATURES)
 
 Print a the contents of `cell` to `io` as LaTeX.
 
@@ -40,9 +38,9 @@ struct MultiColumn
 end
 
 function latex_cell(io::IO, mc::MultiColumn)
-    @unpack n, pos, cell = mc
+    (; n, pos, cell) = mc
     @argcheck(pos ∈ (:l, :c, :r),
-              "$pos is not a recognized position. Use :l, :c, :r.")
+              "$(pos) is not a recognized position. Use :l, :c, :r.")
     print(io, "\\multicolumn{$(n)}{$(pos)}{")
     latex_cell(io, mc.cell)
     print(io, "}")
@@ -64,21 +62,21 @@ end
 MultiRow(n, vpos, cell; width="*") = MultiRow(n, vpos, cell, width)
 
 function latex_cell(io::IO, mr::MultiRow)
-    @unpack vpos, n, width = mr
+    (; vpos, n, width) = mr
     @argcheck(vpos ∈ (:t, :c, :b),
-              "$vpos is not a recognized position. Use :t, :c, :b.")
+              "$(vpos) is not a recognized position. Use :t, :c, :b.")
     print(io, "\\multirow[$vpos]{$(n)}{$width}{")
     latex_cell(io, mr.cell)
     print(io, "}")
 end
 
-
+
 # non-cell-like objects
 
 struct Rule{T} end
 
 """
-    $SIGNATURES
+$(SIGNATURES)
 
 Horizontal rule. The `kind` of the rule is specified by a symbol, which will
 generally be printed as `\\KINDrule` for rules in `booktabs`, eg `Rule(:top)`
@@ -118,7 +116,7 @@ CMidRule(trim, left, right) = CMidRule(nothing, trim, left, right)
 CMidRule(left, right) = CMidRule(nothing, left, right)
 
 function latex_line(io::IO, rule::CMidRule)
-    @unpack wd, trim, left, right = rule
+    (; wd, trim, left, right) = rule
     print(io, "\\cmidrule")
     wd ≠ nothing && print(io, "[$(wd)]")
     trim ≠ nothing && print(io, "($(trim))")
@@ -145,7 +143,7 @@ function latex_line(io::IO, lines::Tuple)
     end
 end
 
-
+
 # tabular and similar environments
 
 abstract type TabularLike end
@@ -165,7 +163,7 @@ latex_env_begin(io::IO, t::Tabular) = println(io, "\\begin{tabular}{$(t.cols)}")
 latex_env_end(io::IO, t::Tabular) = println(io, "\\end{tabular}")
 
 """
-    $(SIGNATURES)
+$(SIGNATURES)
 
 Print `lines` to `io` as a LaTeX using the given environment.
 
@@ -197,7 +195,7 @@ latex_tabular(io::IO, t::TabularLike, lines::AbstractMatrix) =
     latex_tabular(io, t, [lines])
 
 """
-    $(SIGNATURES)
+$(SIGNATURES)
 
 LaTeX output as a string. See other method for the other arguments.
 """
