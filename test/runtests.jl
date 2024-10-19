@@ -1,4 +1,4 @@
-using LaTeXTabulars, Test, LaTeXStrings
+using LaTeXTabulars, Test, LaTeXStrings, LaTeXEscapes
 
 # for testing
 using LaTeXTabulars: latex_cell
@@ -12,17 +12,16 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
 "Comparison using normalized whitespace. For testing."
 ≅(a, b) = squash_whitespace(a) == squash_whitespace(b)
 
-
 @testset "tabular" begin
     tb = Tabular("lcl")
     tlines = [Rule(:top),
-              [L"\alpha", L"\beta", "sum"],
+              [lx"\alpha"m, L"\beta", "sum"],
               Rule(:mid),
               [1, 2, 3],
               Rule(),           # a nice \hline to make it ugly
               [4.0 "5" "six";   # a matrix
                7 8 9],
-              [MultiRow(2, :c, "a11 \\& a21"), "a12", "a13"],
+              [MultiRow(2, :c, lx"a11 \& a21"), "a12", "a13"],
               ["", "a22", "a23"],
               (CMidRule(1, 2), CMidRule("lr", 1, 1)), # just to test tuples
               [MultiColumn(2, :c, "centered")],       # ragged!
@@ -49,10 +48,9 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
     @test read(tmp, String) ≅ tlatex
 end
 
-@test_throws ArgumentError latex_cell(stdout, MultiColumn(2, :BAD, ""))
+@test_throws "BAD is not a recognized position" latex_cell(stdout, MultiColumn(2, :BAD, ""), identity)
 @test_throws ArgumentError CMidRule(3, 1)     # not ≤
-@test_throws MethodError latex_cell(stdout, ("un", "supported"))
-@test_throws MethodError CMidRule(1, 1, 1, 2) # invalid types
+@test_throws MethodError CMidRule(1, 1, "a fish", 2) # invalid types
 
 @testset "longtable" begin
     lt = LongTable("rrr", ["alpha", "beta", "gamma"])
