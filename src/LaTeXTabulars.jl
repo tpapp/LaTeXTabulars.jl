@@ -1,7 +1,10 @@
+"""
+$(DocStringExtensions.README)
+"""
 module LaTeXTabulars
 
 using ArgCheck: @argcheck
-using DocStringExtensions: SIGNATURES
+using DocStringExtensions: SIGNATURES, DocStringExtensions
 using LaTeXEscapes: LaTeX, @lx_str, print_escaped
 
 export DEFAULT_FORMATTER, SimpleCellFormatter, Rule, CMidRule, MultiColumn, MultiRow,
