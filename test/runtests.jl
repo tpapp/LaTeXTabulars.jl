@@ -30,10 +30,10 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
                  \toprule
                  $\alpha$ & $\beta$ & sum \\
                  \midrule
-                 1 & 2 & 3 \\
+                 $1$ & $2$ & $3$ \\
                  \hline
-                 4.0 & 5 & six \\
-                 7 & 8 & 9 \\
+                 $4.0$ & 5 & six \\
+                 $7$ & $8$ & $9$ \\
                  \multirow[c]{2}{*}{a11 \& a21} & a12 & a13 \\
                  & a22 & a23 \\ \cmidrule{1-2} \cmidrule(lr){1-1}
                  \multicolumn{2}{c}{centered} \\
@@ -74,8 +74,8 @@ end
                  \endfoot
                  \hline
                  \endlastfoot
-                 1 & 2 & 3 \\
-                 4.0 & 5 & six \\
+                 $1$ & $2$ & $3$ \\
+                 $4.0$ & 5 & six \\
                  \hline
                  \end{longtable}"
 

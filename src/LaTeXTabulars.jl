@@ -5,7 +5,7 @@ module LaTeXTabulars
 
 using ArgCheck: @argcheck
 using DocStringExtensions: SIGNATURES, DocStringExtensions
-using LaTeXEscapes: LaTeX, @lx_str, print_escaped
+using LaTeXEscapes: LaTeX, @lx_str, print_escaped, wrap_math
 
 export DEFAULT_FORMATTER, SimpleCellFormatter, Rule, CMidRule, MultiColumn, MultiRow,
     Tabular, LongTable, latex_tabular
@@ -18,7 +18,6 @@ struct SimpleCellFormatter
     inf
     minus_inf
     NaN
-    negative_zero
     nothing
     missing
     @doc """
@@ -30,12 +29,12 @@ struct SimpleCellFormatter
     as an escaped string).
     """
     function SimpleCellFormatter(; inf = lx"\infty"m, minus_inf = lx"-\infty"m, NaN = "NaN",
-                                 negative_zero = "false", nothing = "---", missing = "---")
-        new(inf, minus_inf, NaN, negative_zero, nothing, missing)
+                                 nothing = "---", missing = "---")
+        new(inf, minus_inf, NaN, nothing, missing)
     end
 end
 
-"The default formatter."
+"The default formatter for `latex_table`. Its initial value is [`SimpleCellFormatter`](@ref)."
 DEFAULT_FORMATTER = SimpleCellFormatter(;)
 
 function (formatter::SimpleCellFormatter)(x)
@@ -44,17 +43,16 @@ function (formatter::SimpleCellFormatter)(x)
     elseif ismissing(x)
         formatter.missing
     elseif x isa Real
-        if iszero(x) && signbit(x)
-            formatter.negative_zero
-        elseif x == Inf
+        if x == Inf
             formatter.inf
         elseif x == -Inf
             formatter.minus_inf
         elseif isnan(x)
             formatter.NaN
         else
-            x
+            wrap_math(string(x))
         end
+    else
         x
     end
 end
@@ -69,8 +67,7 @@ Write a the contents of `cell` to `io` as LaTeX.
 are written into the LaTeX output, otherwise they are formatted as strings (and escaped
 asnecessary when written into LaTeX).
 
-!!! NOTE
-
+!!! note
     If you want to make simple formatting changes, it is best to write your own
     `formatter`.
 """
@@ -140,6 +137,11 @@ prints `\\toprule`. To obtain a `\\hline`, use `Rule{:h}`.
 """
 Rule(kind::Symbol = :h) = Rule{kind}()
 
+"""
+$(SIGNATURES)
+
+Emit an object that takes up a whole line in a table. Mostly used for rules.
+"""
 latex_line(io::IO, ::Rule{:top}, _) = println(io, "\\toprule")
 
 latex_line(io::IO, ::Rule{:mid}, _) = println(io, "\\midrule")
@@ -205,13 +207,27 @@ end
 abstract type TabularLike end
 
 """
-    Tabular(cols)
+`Tabular(cols)`
 
 For the LaTeX environment `\\begin{tabular}{cols} ... \\end{tabular}`.
+
+`cols` should follow the column specification syntax of `tabular`.
+
+# Example
+
+```jldoctest
+julia> using LaTeXTabulars
+
+julia> Tabular("l" * "r"^5)
+Tabular("lrrrrr")
+```
 """
 struct Tabular <: TabularLike
     "A column specification, eg `\"llrr\"`."
     cols::AbstractString
+    function Tabular(cols::AbstractString)
+        new(cols)
+    end
 end
 
 """
@@ -235,7 +251,7 @@ Print `lines` to `io` as a LaTeX using the given environment.
 
 Each `line` in `lines` can be
 
-- a rule-like object, eg [`Rule`] or [`CMidRule`],
+- a rule-like object, eg [`Rule`](@ref) or [`CMidRule`](@ref),
 
 - an iterable (eg `AbstractVector`) of cells,
 
@@ -245,7 +261,7 @@ Each `line` in `lines` can be
 
 - a matrix, each row of which is treated as a line.
 
-Constructs which contain cells are printed by `latex_cell`, using the
+Constructs which contain cells are printed by [`latex_cell`](@ref), using the
 `formatter`, which leaves strings and `LaTeX` cells as is.
 
 It is recommended that formatting parts of the table is done directly on the arguments,
@@ -294,6 +310,13 @@ function latex_tabular(filename::AbstractString, t::TabularLike, lines;
     end
 end
 
+"""
+`LongTable(cols, header)`
+
+The `longtable` ``\\LaTeX`` environment. `cols` is a column specification, `header`
+is an iterable of cells (cf [`latex_cell`](@ref) that is repeated at the top of each
+page. `formatter` is applied to all cells.
+"""
 struct LongTable <: TabularLike
     "A column specification, eg `\"llrr\"`."
     cols::AbstractString
