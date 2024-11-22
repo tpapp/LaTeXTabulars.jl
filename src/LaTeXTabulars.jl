@@ -23,6 +23,17 @@ struct SimpleCellFormatter
     @doc """
     $(SIGNATURES)
 
+    A simple formatter that replaces some commonly used values used in displaying data.
+
+    Each field below should contain a string or a `LaTeX` code (otherwise, it is emitted
+    as an escaped string).
+    """
+    function SimpleCellFormatter(; inf = lx"\infty"m, minus_inf = lx"-\infty"m, NaN = "NaN",
+                                 nothing = "---", missing = "---")
+        new(inf, minus_inf, NaN, nothing, missing)
+    end
+end
+
 "The default formatter for `latex_table`. Its initial value is [`SimpleCellFormatter`](@ref)."
 DEFAULT_FORMATTER = SimpleCellFormatter(;)
 
