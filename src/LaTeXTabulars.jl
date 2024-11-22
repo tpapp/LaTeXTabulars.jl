@@ -7,8 +7,8 @@ using ArgCheck: @argcheck
 using DocStringExtensions: SIGNATURES, DocStringExtensions
 using LaTeXEscapes: LaTeX, @lx_str, print_escaped, wrap_math
 
-export DEFAULT_FORMATTER, SimpleCellFormatter, Rule, CMidRule, MultiColumn, MultiRow,
-    Tabular, LongTable, latex_tabular
+export DEFAULT_FORMATTER, SimpleCellFormatter, Rule, LineSpace, CMidRule, MultiColumn,
+    MultiRow, Tabular, LongTable, latex_tabular
 
 ####
 #### cell formatters
@@ -214,8 +214,8 @@ end
 
 LineSpace() = LineSpace(nothing)
 
-function latex_line(io::IO, ls::LineSpace)
-    @unpack wd = ls
+function latex_line(io::IO, ls::LineSpace, formatter)
+    (; wd) = ls
     print(io, "\\addlinespace")
     wd ≠ nothing && print(io, "[$(wd)]")
     println(io)

@@ -3,14 +3,39 @@ using LaTeXTabulars, Test, LaTeXStrings, LaTeXEscapes
 # for testing
 using LaTeXTabulars: latex_cell
 
-"Normalize whitespace, for more convenient testing."
-squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
-
-@test squash_whitespace(" something  \n with line  breaks \n  and   stuff \n") ==
-    "something with line breaks and stuff"
-
-"Comparison using normalized whitespace. For testing."
-≅(a, b) = squash_whitespace(a) == squash_whitespace(b)
+"Comparison using normalized whitespace, printing the difference. For testing."
+function ≅(a, b)
+    function normalized_lines(str)
+        split(replace(str,
+                      r"^ *"m => "",               # beginning of line: remove whitespace
+                      r"  *"m => " ",              # elsewhere, replace with one space
+                      "\r" => "",                  # no \r, for Windows (is this even needed?)
+                      r"\n*$" => "\n",             # normalize trailing newlines to one
+                      ), '\n')
+    end
+    sa = normalized_lines(a)
+    sb = normalized_lines(b)
+    la = length(sa)
+    lb = length(sb)
+    for i in min(la, lb)
+        if sa[i] ≠ sa[i]
+            printstyled("difference in line $(i): "; color = :red)
+            print("“$(sa[i])” ≠ “$(sa[i])”")
+            return false
+        end
+    end
+    if la > lb
+        printstyled("first input has $(la - lb) extra lines"; color = :red)
+        print(reduce(vcat, sa[(lb+1):end]))
+        false
+    elseif la < lb
+        printstyled("first input has $(lb - la) extra lines"; color = :red)
+        print(reduce(vcat, sb[(la+1):end]))
+        false
+    else
+        true
+    end
+end
 
 @testset "tabular" begin
     tb = Tabular("lcl")
@@ -21,7 +46,7 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
               Rule(),           # a nice \hline to make it ugly
               [4.0 "5" "six";   # a matrix
                7 8 9],
-              [MultiRow(2, :c, "a11 \\& a21"), "a12", "a13"],
+              [MultiRow(2, :c, lx"a11 \& a21"), "a12", "a13"],
               LineSpace(),
               ["", "a22", "a23"],
               (CMidRule(1, 2), CMidRule("lr", 1, 1)), # just to test tuples
@@ -37,12 +62,10 @@ squash_whitespace(string) = strip(replace(string, r"[ \n\t]+" => " "))
                  $7$ & $8$ & $9$ \\
                  \multirow[c]{2}{*}{a11 \& a21} & a12 & a13 \\
                  \addlinespace
-                 & a22 & a23 \\ \cmidrule{1-2} \cmidrule(lr){1-1}
-                 \multicolumn{2}{c}{centered} \\
+                 & a22 & a23 \\
+                 \cmidrule{1-2} \cmidrule(lr){1-1} \multicolumn{2}{c}{centered} \\
                  \bottomrule
                  \end{tabular}"
-
-    tlatex = replace(tlatex, "\r\n"=>"\n")
     @test latex_tabular(String, tb, tlines) ≅ tlatex
     tmp = tempname()
     latex_tabular(tmp, tb, tlines)
@@ -81,7 +104,6 @@ end
                  \hline
                  \end{longtable}"
 
-    tlatex = replace(tlatex, "\r\n"=>"\n")
     @test latex_tabular(String, lt, tlines) ≅ tlatex
     tmp = tempname()
     latex_tabular(tmp, lt, tlines)
