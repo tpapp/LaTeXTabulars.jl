@@ -105,6 +105,7 @@ ShowMe(z) # hide
 ```@docs
 Rule
 CMidRule
+LineSpace
 ```
 
 ```@docs
