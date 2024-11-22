@@ -1,4 +1,4 @@
-using LaTeXTabulars, Test, LaTeXStrings, LaTeXEscapes
+using LaTeXTabulars, Test, LaTeXStrings, LaTeXEscapes, JET, Aqua
 
 # for testing
 using LaTeXTabulars: latex_cell
@@ -109,4 +109,17 @@ end
     latex_tabular(tmp, lt, tlines)
     @test isfile(tmp) && read(tmp, String) ≅ tlatex
     @test read(tmp, String) ≅ tlatex
+end
+
+using JET
+@testset "static analysis with JET.jl" begin
+    @test isempty(JET.get_reports(report_package(LaTeXTabulars,
+                                                 target_modules=(LaTeXTabulars,))))
+end
+
+@testset "QA with Aqua" begin
+    import Aqua
+    Aqua.test_all(LaTeXTabulars; ambiguities = false)
+    # testing separately, cf https://github.com/JuliaTesting/Aqua.jl/issues/77
+    Aqua.test_ambiguities(LaTeXTabulars)
 end
